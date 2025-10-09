@@ -1,9 +1,11 @@
 package model
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"github.com/oklog/ulid/v2" 
+)
 
 type DigitalProductPassport struct {
-	ID                       primitive.ObjectID       `json:"_id,omitempty" bson:"_id,omitempty"`
+	ID                       ulid.ULID               `json:"_id,omitempty" bson:"_id,omitempty"`
 	ProductOverview          ProductOverview          `json:"productOverview" bson:"productOverview"`
 	Reparability             Reparability             `json:"reparability" bson:"reparability"`
 	EnvironmentalImpact      EnvironmentalImpact      `json:"environmentalImpact" bson:"environmentalImpact"`

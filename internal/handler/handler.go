@@ -9,7 +9,7 @@ import (
 	"github.com/interfacerproject/interfacer-dpp/internal/database"
 	"github.com/interfacerproject/interfacer-dpp/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"github.com/oklog/ulid/v2"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
@@ -37,15 +37,15 @@ func CreateDPP(c *gin.Context) {
 		return
 	}
 
-	dpp.ID = primitive.NewObjectID()
+	dpp.ID = ulid.Make() 
 
-	result, err := dppCollection.InsertOne(ctx, dpp)
+	_, err = dppCollection.InsertOne(ctx, dpp)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating document"})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"insertedID": result.InsertedID})
+	c.JSON(http.StatusCreated, gin.H{"insertedID": dpp.ID.String()})
 }
 
 func GetDPP(c *gin.Context) {
@@ -59,7 +59,7 @@ func GetDPP(c *gin.Context) {
 	defer cancel()
 
 	id := c.Param("id")
-	objId, err := primitive.ObjectIDFromHex(id)
+	objId, err := ulid.Parse(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
 		return
@@ -90,7 +90,7 @@ func UpdateDPP(c *gin.Context) {
 	defer cancel()
 
 	id := c.Param("id")
-	objId, err := primitive.ObjectIDFromHex(id)
+	objId, err := ulid.Parse(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
 		return
@@ -129,7 +129,7 @@ func DeleteDPP(c *gin.Context) {
 	defer cancel()
 
 	id := c.Param("id")
-	objId, err := primitive.ObjectIDFromHex(id)
+	objId, err := ulid.Parse(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
 		return
@@ -165,7 +165,7 @@ func GetAllDPPs(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error retrieving documents"})
 		return
 	}
-	defer cursor.Close(ctx) // Important to close the cursor
+	defer cursor.Close(ctx)
 
 	if err = cursor.All(ctx, &dpps); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error decoding documents"})
