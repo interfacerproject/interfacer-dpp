@@ -1,7 +1,9 @@
 {
   "boolean": [
     "ceMarking",
-    "rohsCompliance"
+    "rohsCompliance",
+    "conformityAssessmentCE",
+    "euDeclarationOfConformityID"
   ],
   "date": [
     "dateOfRecycling",
@@ -27,7 +29,24 @@
     "netWeight",
     "nominalMaximumRPM",
     "numberOfGears",
-    "to\nrque",
-    "warrantyDuration"
+    "torque",
+    "warrantyDuration",
+    "co2eEmissionsPerUnit",
+    "voltage",
+    "energy",
+    "thermalCoefficient",
+    "lightTransmittance",
+    "amount",
+    "minimumRecycledContent",
+    "recyclablePackaging",
+    "netContentCapacity",
+    ".*PowerCapability.*",
+    "handleHeight",
+    "weight",
+    "capacityThresholdExhaustion"
+  ],
+  "dimensions": [
+    "dimensions",
+    "size"
   ]
 }
