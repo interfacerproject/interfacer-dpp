@@ -1,0 +1,33 @@
+{
+  "boolean": [
+    "ceMarking",
+    "rohsCompliance"
+  ],
+  "date": [
+    "dateOfRecycling",
+    "dateOfRefurbishment",
+    "dateOfRepair"
+  ],
+  "link": [
+    "linkToDPP",
+    "productImage",
+    "serviceAndRepairInstructions"
+  ],
+  "quantity": [
+    "dcVoltage",
+    "maximumCurrent",
+    "maximumElectricalPower",
+    "maximumVoltage",
+    "powerRating",
+    "chemicalConsumptionPerUnit",
+    "co2\neEmissionsPerUnit",
+    "energyConsumptionPerUnit",
+    "waterConsumptionPerUnit",
+    "netContent",
+    "netWeight",
+    "nominalMaximumRPM",
+    "numberOfGears",
+    "to\nrque",
+    "warrantyDuration"
+  ]
+}

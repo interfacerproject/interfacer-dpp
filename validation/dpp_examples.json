@@ -1,0 +1,353 @@
+[
+{
+  "productOverview": {
+    "brandName": "Billy Jeans",
+    "productImage": "https://dpp.eecc.de/api/management/files/landing_page_jeans_jacket2",
+    "globalProductClassificationCode": "10001350",
+    "countryOfSale": "United Kingdom",
+    "productDescription": "Billy Jeans Trucker Jacket",
+    "productName": "Denim jacket",
+    "netContentAndUnitOfMeasure": "1 Unit",
+    "gtin": "05012345101156",
+    "size": "Large",
+    "color": "Blue",
+    "countryOfOrigin": "Portugal",
+    "yearOfSale": "2024",
+    "taricCode": "62033200",
+    "netWeight": "0.942 kg"
+  },
+  "environmentalImpact": {
+    "waterConsumptionPerUnit": "11010.0 L",
+    "chemicalConsumptionPerUnit": "8.1 kg",
+    "co2eEmissionsPerUnit": "30.5 kg",
+    "energyConsumptionPerUnit": "28.0 kWh"
+  },
+  "materialAndComponents": {
+    "numberOfMaterialsAndComponentsUsed": 4,
+    "mainMaterial": "Cotton",
+    "otherMaterials": "Metal",
+    "recycledContent": "40 %",
+    "contentOfMaterialsWithSustainabilityCertification": "22 %"
+  },
+  "durabilityAndRepairability": {
+    "careInstructions": "Turn inside out. Wash separately, on a gentle cycle, at no more than 30°C. Washing less frequently will help to extend the life of the denim jacket.",
+    "possibleLifespan": "15 years",
+    "possibilityToSeparateProductIntoMaterials": "Yes",
+    "resistanceToStressOrAging": "15",
+    "availabilityOfRepairAndMaintenanceInstructions": "Yes",
+    "reliability": "No",
+    "repairInformation": "Yes"
+  },
+  "certificates": {
+    "nameOfCertificate": "OEKO-TEX - ORGANIC COTTON"
+  },
+  "consumerInformation": {
+    "marketingClaim": "Elevate your everyday with Billy Jeans' ultimate denim jacket - classic, cool and undeniably you!"
+  },
+  "economicOperator": {
+    "companyName": "Denim Collective UK",
+    "gln": "5012345100005",
+    "eoriNumber": "GB123987456000",
+    "addressLine1": "1 Thread Street",
+    "addressLine2": "London, UK",
+    "contactInformation": "support@denimcollective.co.uk"
+  },
+  "informationAboutTheRepair": {
+    "reasonForRepair": "Faulty button",
+    "performedAction": "Button replaced",
+    "materialsUsed": "Metal button",
+    "dateOfRepair": "Friday, August 9, 2024, 12:59:00 PM"
+  },
+  "informationOnTheRecycling": {
+    "performedAction": "Recycling",
+    "dateOfRecycling": "Wednesday, October 30, 2024, 5:32:00 PM"
+  }
+},
+{
+  "productOverview": {
+    "brandName": "PowerDrill Pro",
+    "productImage": "http://example.com/drill.jpg",
+    "globalProductClassificationCode": "12345678",
+    "countryOfSale": "Germany",
+    "productDescription": "A high-performance cordless drill.",
+    "productName": "Cordless Drill X-1000",
+    "netWeight": "1.5 kg",
+    "gtin": "01234567890123",
+    "color": "Blue/Black",
+    "countryOfOrigin": "China",
+    "dimensions": "20x15x5 cm",
+    "modelName": "X-1000",
+    "taricCode": "8467211000",
+    "conditionOfTheProduct": "New",
+    "netContent": "1 unit",
+    "nominalMaximumRPM": "2000 RPM",
+    "maximumDrillingDiameter": "13mm (steel), 30mm (wood)",
+    "numberOfGears": "2",
+    "torque": "50 Nm",
+    "warrantyDuration": "2 years",
+    "safetyInstructions": "Always wear safety glasses."
+  },
+  "reparability": {
+    "serviceAndRepairInstructions": "See manual at http://example.com/manual",
+    "availabilityOfSpareParts": "5 years from date of purchase"
+  },
+  "environmentalImpact": {
+    "waterConsumptionPerUnit": "0 L",
+    "chemicalConsumptionPerUnit": "0.1 g",
+    "co2eEmissionsPerUnit": "5 kg CO2e",
+    "energyConsumptionPerUnit": "0.5 kWh"
+  },
+  "complianceAndStandards": {
+    "ceMarking": "Yes",
+    "rohsCompliance": "Yes"
+  },
+  "certificates": {
+    "nameOfCertificate": "TUV Rheinland GS Mark"
+  },
+  "recyclability": {
+    "recyclingInstructions": "Dispose of at an e-waste facility.",
+    "materialComposition": "Plastic: 40%, Steel: 50%, Copper: 10%",
+    "substancesOfConcern": "Lithium-Ion Battery"
+  },
+  "energyUseAndEfficiency": {
+    "batteryType": "Lithium-Ion",
+    "batteryChargingTime": "60 minutes",
+    "batteryLife": "500 cycles",
+    "chargerType": "Fast Charger Model C-200",
+    "maximumElectricalPower": "500W",
+    "maximumVoltage": "20V",
+    "maximumCurrent": "25A",
+    "powerRating": "400W",
+    "dcVoltage": "18V"
+  },
+  "components": [
+    {
+      "componentDescription": "18V 2.0Ah Battery Pack",
+      "componentGTIN": "98765432109876",
+      "linkToDPP": "http://example.com/dpp/battery"
+    }
+  ],
+  "economicOperator": {
+    "companyName": "Global Tools Inc.",
+    "gln": "1122334455667",
+    "eoriNumber": "DE1234567",
+    "addressLine1": "123 Tool Street",
+    "addressLine2": "Toolsville, 12345",
+    "contactInformation": "support@globaltools.com"
+  },
+  "repairInformation": {
+    "reasonForRepair": "N/A",
+    "performedAction": "N/A",
+    "materialsUsed": "N/A",
+    "dateOfRepair": "2025-10-07T00:00:00Z"
+  },
+  "refurbishmentInformation": {
+    "performedAction": "N/A",
+    "materialsUsed": "N/A",
+    "dateOfRefurbishment": "2025-10-07T00:00:00Z"
+  },
+  "recyclingInformation": {
+    "performedAction": "N/A",
+    "dateOfRecycling": "2025-10-07T00:00:00Z"
+  }
+},
+{
+  "productOverview": {
+    "brandName": "Bubble Trouble",
+    "productImage": "https://dpp.eecc.de/api/management/files/default_detergent",
+    "globalProductClassificationCode": "10000424",
+    "countryOfSale": "United Kingdom",
+    "productDescription": "Lavender & Eucalyptus Non-bio, 1.5 Litre",
+    "productName": "Bubble Trouble Liquid Detergent",
+    "netContentAndUnitOfMeasure": "1.5 Litre",
+    "gtin": "05012345101132",
+    "yearOfSale": "2024",
+    "dimensions": "14.1 x 18.8 x 32.9 cm",
+    "consumerUnit": "1 Unit"
+  },
+  "packaging": {
+    "chemicalConsumption": {
+      "ingredient": "Cadmium",
+      "amount": "0.2 mg/kg"
+    },
+    "disposalInstructions": "Our detergent bottles are made from unmixed plastic and are fully recyclable under local community waste collection schemes. Once detergent is used, the empty bottle can be fed into the recycling process.",
+    "recyclablePackaging": "100 %",
+    "minimumRecycledContent": "55 %"
+  },
+  "environmentalImpact": {
+    "waterConsumptionPerUnit": "1200 L",
+    "chemicalConsumptionPerUnit": "2 kg",
+    "co2eEmissionsPerUnit": "2 kg",
+    "energyConsumptionPerUnit": "3.2 kWh",
+    "cleaningPerformanceAtLowTemperature": "Full performance at 20°C",
+    "minimumContentOfMaterialWithSustainabilityCertification": "70 %"
+  },
+  "ingredients": {
+    "ingredientList": "Water, Ethanol, Glycerine, Parfum, Citric acid, Potassium oleate, Sodium chloride",
+    "minimumContentOfBiodegradableSubstances": "10 %",
+    "presenceOfNonBiodegradableMicroplastics": "5 %"
+  },
+  "dosageInstructions": {
+    "usageAndDisposalInfo": "45cl per use"
+  },
+  "consumerInformation": {
+    "marketingClaim": "Bubble Trouble lavender & eucalyptus liquid detergent. Our most powerful formula yet, features plant-based active ingredients to help your clothes last longer. Fights against tough stains and helps prevent whites from greying. \n- Lavender & Eucalyptus fragrance \n- Plant-based bio-degradable ingredients \n- Dermatologically tested"
+  },
+  "economicOperator": {
+    "companyName": "Bubble Trouble UK",
+    "gln": "5012345100128",
+    "eoriNumber": "GB123987456004",
+    "addressLine1": "15 Washwell Way",
+    "addressLine2": "London, UK",
+    "contactInformation": "contact@bubbletrouble.co.uk"
+  }
+},
+{
+  "productOverview": {
+    "brandName": "Ready 2 Go",
+    "productImage": "https://dpp.eecc.de/api/management/files/landing_page_ebike_battery",
+    "globalProductClassificationCode": "10000546",
+    "countryOfSale": "United Kingdom",
+    "productDescription": "Lithium Li-ion, 36V 15.6Ah 750W",
+    "productName": "Ready 2 Go E-Bike Battery 7500",
+    "productModel": "R2G 1210",
+    "netContentCapacity": "15.6 Ah",
+    "netWeight": "3.8 kg",
+    "gtin": "05012345101002",
+    "manufacturer": "Brad's Batteries",
+    "countryOfOrigin": "Germany",
+    "lifecycleStatus": "Original/Repurposed/Reuse/Remanufactured/Waste",
+    "voltage": "36V",
+    "energy": "537Wh",
+    "cell": "High Power Li-ion LiNiCoMnO2",
+    "size": "414x101x74.5mm"
+  },
+  "lifetime": {
+    "capacityThresholdExhaustion": "577 Wh",
+    "cycleLife": "1000+",
+    "warrantyPeriod": "24 months"
+  },
+  "powerCapability": {
+    "originalPowerCapabilityAt80SOC": "490 Wh",
+    "originalPowerCapabilityAt20SOC": "150 Wh"
+  },
+  "complianceAndStandards": {
+    "conformityAssessmentCE": "Yes",
+    "euDeclarationOfConformityID": "Yes"
+  },
+  "recyclability": {
+    "separateCollection": "Dispose of the waste battery in accordance with it's material composition. Not to be disposed with normal waste",
+    "endOfLifeInformation": "Return battery to a specialist dealer or dispose of it at a battery collection point. Check for local community collection programs or utilise e-waste pick-up services."
+  },
+  "economicOperator": {
+    "companyName": "Brad's Batteries UK",
+    "gln": "5012345100104",
+    "eoriNumber": "GB123987456003",
+    "addressLine1": "12 Biker Grove",
+    "addressLine2": "London, UK",
+    "contactInformation": "contact@bradsbatteries.com"
+  },
+  "informationAboutTheRefurbishment": {
+    "performedAction": "Reconditioning battery for reuse",
+    "batteryStatus": "Refurbished",
+    "dateOfRefurbishment": "Friday, July 26, 2024, 4:36:00 PM"
+  },
+  "informationOnTheRecycling": {
+    "performedAction": "Recycled",
+    "batteryStatus": "Waste",
+    "dateOfRecycle": "Wednesday, October 30, 2024, 6:17:00 AM"
+  }
+},
+{
+  "productOverview": {
+    "brandName": "Triple Clear",
+    "productImage": "https://dpp.eecc.de/api/management/files/landing_page_window",
+    "globalProductClassificationCode": "10005285",
+    "countryOfSale": "United Kingdom",
+    "productDescription": "Single window, 50x100cm, PVC Frame, Double Glazing",
+    "productName": "Triple Clear Tilt & Turn Window",
+    "netContentAndUnitOfMeasure": "1 Unit",
+    "weight": "58 kg",
+    "gtin": "05012345101125",
+    "colourOutside": "White",
+    "colourInside": "White",
+    "countryOfOrigin": "Portugal",
+    "dimensions": "50 x 100 cm",
+    "modelName": "Triple Clear GGL/GGU",
+    "taricCode": "730830",
+    "seals": {
+      "quantity": 3,
+      "colour": "Grey"
+    },
+    "windowHandles": "1 Swivel grip",
+    "handleHeight": "50cm",
+    "glazing": "Double glazing",
+    "lightTransmittance": "0.82 %",
+    "thermalCoefficient": "0.65 Watt/m²K",
+    "soundInsulation": "33 - 44 db",
+    "frameMaterial": "PVC",
+    "openingDirection": "Inward",
+    "rollerShutters": "No",
+    "driveUnitRollerShutters": "-",
+    "insectScreen": {
+      "type": "ISG - Rollo",
+      "size": "1400 x 1200 mm",
+      "surface": "White"
+    },
+    "safetyAndSecurityLockingFittings": "RC-3 according to DIN EN 1627, burglar-resistant SH-1, security locking part including mushroom pin",
+    "warrantyDuration": "10 years",
+    "safetyInstructions": "Triple Clear GGL/GGU windows are intended for use by individuals with the necessary experience and knowledge or those who have received instructions from a responsible person. The window should only be used once it has been installed according to the instructions. Before use, ensure the window can be operated safely without risk of property damage or injury to people or animals. During installation, prevent the window from suddenly and uncontrollably opening or closing. If the window is not to be installed immediately, cover it with the provided window covers.",
+    "conditionOfTheProduct": "Repaired"
+  },
+  "installationInstructions": {
+    "hardware": "Turbo screws 150 mm, Mounting hole right 6.5, Mounting hole left 6.5."
+  },
+  "reparability": {
+    "serviceAndRepairInstructions": "For full service and repair instructions, please refer to our website.",
+    "availabilityOfSpareParts": "Yes"
+  },
+  "environmentalImpact": {
+    "waterConsumptionPerUnit": "35.0 L",
+    "chemicalConsumptionPerUnit": "9.0 kg",
+    "co2eEmissionsPerUnit": "30.5 kg",
+    "energyConsumptionPerUnit": "652.0 kWh"
+  },
+  "complianceAndStandards": {
+    "ceMarking": "Yes",
+    "rohsCompliance": "Yes"
+  },
+  "certificates": {
+    "nameOfCertificate": "PVC Research UK",
+    "reactionToFire": "B",
+    "watertightness": "9A"
+  },
+  "recyclability": {
+    "recyclingInstructions": "Recycling instructions old windows. \n1. Assess the Condition \nDetermine if the windows are still in good condition. If so, consider donating them to a local charity or reuse organisation. Remove any non-recyclable components, such as plastic trim, weather stripping, or hardware. \n2. Contact a Licensed Waste Carrier \n The easiest and most effective way to dispose of old windows is to arrange for a licensed waste carrier who can ensure that every part of your old windows will be recycled or repurposed. \n3. Alternatives to Professional Collection. If professional collection isn’t an option, consider: \n▪ Local Recycling Centres: Some centres accept windows and doors, but you’ll need to transport them yourself. \n▪ Council Waste Collection: Check if your local council offers bulk waste pick-up services, which may include old windows and doors. \n\n Remember to handle glass safely and wear appropriate protective gear when working with windows",
+    "materialComposition": "PVC, Glass, Lacquered aluminium, Copper or zinc",
+    "substancesOfConcern": "None"
+  },
+  "economicOperator": {
+    "companyName": "Pane UK",
+    "gln": "5012345100067",
+    "eoriNumber": "GB123987456002",
+    "addressLine1": "8 Pilkington Street",
+    "addressLine2": "London, UK",
+    "contactInformation": "contact@paneuk.com"
+  },
+  "informationOnInstallation": {
+    "performedAction": "Installed and safety check performed",
+    "materialsUsed": "Mounting foam, screws, anchors, sealant",
+    "dateOfInstallation": "Wednesday, July 24, 2024, 1:48:00 PM"
+  },
+  "informationAboutTheRepair": {
+    "reasonForRepair": "No longer closing properly, leaking",
+    "performedAction": "Seals replaced, closing mechanism replaced, windows adjusted and lubricated.",
+    "materialsUsed": "Rubber seals white, grease AC300, closing mechanism GH 23.1",
+    "dateOfRepair": "Saturday, September 21, 2024, 8:03:00 AM"
+  },
+  "informationOnTheRecycling": {
+    "performedAction": "Window dismantled and materials recycled",
+    "dateOfRecycle": "Wednesday, October 30, 2024, 1:49:23 PM"
+  }
+}
+]

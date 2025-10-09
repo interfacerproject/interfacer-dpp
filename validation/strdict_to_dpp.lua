@@ -1,18 +1,13 @@
 -- This script takes a string dictionary from entry, recognizes known
 -- DPP fields and turns them into more descriptives data entries.
 
-function parse(IN)
+data_types   = JSON.decode(KEYS)
+DPP_examples = JSON.decode(DATA)
 
-  local SDICT <const> = JSON.decode(IN)
+function parse(KNOWN, IN)
 
   local function recon(v, k)
-    local types <const> = {
-      boolean = { 'ceMarking', 'rohsCompliance' },
-      link = { 'linkToDPP', 'productImage', 'serviceAndRepairInstructions' },
-      quantity = { 'dcVoltage', 'maximumCurrent', 'maximumElectricalPower', 'maximumVoltage', 'powerRating', 'chemicalConsumptionPerUnit', 'co2eEmissionsPerUnit', 'energyConsumptionPerUnit', 'waterConsumptionPerUnit', 'netContent', 'netWeight', 'nominalMaximumRPM', 'numberOfGears', 'torque', 'warrantyDuration' },
-      date = { 'dateOfRecycling', 'dateOfRefurbishment', 'dateOfRepair' }
-    }
-    for kk,vv in pairs(types) do
+    for kk,vv in pairs(data_types) do
       if array_contains(vv, k) then
         return({type = kk, value = v})
       end
@@ -21,7 +16,7 @@ function parse(IN)
   end -- recon()
 
   local OUT = { }
-  for k,v in pairs(SDICT) do
+  for k,v in pairs(IN) do
     if k == 'components' and isarray(v) then
       -- L1 array
       OUT.components = { }
@@ -37,7 +32,7 @@ function parse(IN)
   return(OUT)
 end -- parse()
 
-write(JSON.encode(parse(DATA)))
+write(JSON.encode(parse(data_types, DPP_examples)))
 
 
 -- {
