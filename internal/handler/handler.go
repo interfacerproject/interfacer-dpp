@@ -8,8 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/interfacerproject/interfacer-dpp/internal/database"
 	"github.com/interfacerproject/interfacer-dpp/internal/model"
-	"go.mongodb.org/mongo-driver/bson"
 	"github.com/oklog/ulid/v2"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
@@ -37,7 +37,7 @@ func CreateDPP(c *gin.Context) {
 		return
 	}
 
-	dpp.ID = ulid.Make() 
+	dpp.ID = ulid.Make()
 
 	_, err = dppCollection.InsertOne(ctx, dpp)
 	if err != nil {

@@ -5,119 +5,154 @@ import (
 )
 
 type TransformedValue struct {
-	Type  string      `json:"type" bson:"type"`
-	Value any `json:"value" bson:"value"`
-	Units string      `json:"units,omitempty" bson:"units,omitempty"`
+	Type  string `json:"type" bson:"type"`
+	Value any    `json:"value" bson:"value"`
+	Units string `json:"units,omitempty" bson:"units,omitempty"`
 }
 
 type DigitalProductPassport struct {
-	ID                       ulid.ULID                `json:"id" bson:"_id"`
-	ProductOverview          ProductOverview          `json:"productOverview" bson:"productOverview"`
-	Reparability             Reparability             `json:"reparability" bson:"reparability"`
-	EnvironmentalImpact      EnvironmentalImpact      `json:"environmentalImpact" bson:"environmentalImpact"`
-	ComplianceAndStandards   ComplianceAndStandards   `json:"complianceAndStandards" bson:"complianceAndStandards"`
-	Certificates             Certificates             `json:"certificates" bson:"certificates"`
-	Recyclability            Recyclability            `json:"recyclability" bson:"recyclability"`
-	EnergyUseAndEfficiency   EnergyUseAndEfficiency   `json:"energyUseAndEfficiency" bson:"energyUseAndEfficiency"`
-	Components               []ComponentInformation   `json:"components" bson:"components"`
-	EconomicOperator         EconomicOperator         `json:"economicOperator" bson:"economicOperator"`
-	RepairInformation        RepairInformation        `json:"repairInformation" bson:"repairInformation"`
-	RefurbishmentInformation RefurbishmentInformation `json:"refurbishmentInformation" bson:"refurbishmentInformation"`
-	RecyclingInformation     RecyclingInformation     `json:"recyclingInformation" bson:"recyclingInformation"`
+	ID                       ulid.ULID                 `json:"id" bson:"_id"`
+	ProductOverview          *ProductOverview          `json:"productOverview,omitempty" bson:"productOverview,omitempty"`
+	Reparability             *Reparability             `json:"reparability,omitempty" bson:"reparability,omitempty"`
+	EnvironmentalImpact      *EnvironmentalImpact      `json:"environmentalImpact,omitempty" bson:"environmentalImpact,omitempty"`
+	ComplianceAndStandards   *ComplianceAndStandards   `json:"complianceAndStandards,omitempty" bson:"complianceAndStandards,omitempty"`
+	Certificates             *Certificates             `json:"certificates,omitempty" bson:"certificates,omitempty"`
+	Recyclability            *Recyclability            `json:"recyclability,omitempty" bson:"recyclability,omitempty"`
+	EnergyUseAndEfficiency   *EnergyUseAndEfficiency   `json:"energyUseAndEfficiency,omitempty" bson:"energyUseAndEfficiency,omitempty"`
+	Components               []ComponentInformation    `json:"components,omitempty" bson:"components,omitempty"`
+	EconomicOperator         *EconomicOperator         `json:"economicOperator,omitempty" bson:"economicOperator,omitempty"`
+	RepairInformation        *RepairInformation        `json:"repairInformation,omitempty" bson:"repairInformation,omitempty"`
+	RefurbishmentInformation *RefurbishmentInformation `json:"refurbishmentInformation,omitempty" bson:"refurbishmentInformation,omitempty"`
+	RecyclingInformation     *RecyclingInformation     `json:"recyclingInformation,omitempty" bson:"recyclingInformation,omitempty"`
+	ConsumerInformation      *ConsumerInformation      `json:"consumerInformation,omitempty" bson:"consumerInformation,omitempty"`
+	DosageInstructions       *DosageInstructions       `json:"dosageInstructions,omitempty" bson:"dosageInstructions,omitempty"`
+	Ingredients              *Ingredients              `json:"ingredients,omitempty" bson:"ingredients,omitempty"`
+	Packaging                *Packaging                `json:"packaging,omitempty" bson:"packaging,omitempty"`
 }
 
 type ProductOverview struct {
-	BrandName                     TransformedValue `json:"brandName" bson:"brandName"`
-	ProductImage                  TransformedValue `json:"productImage" bson:"productImage"`
-	GlobalProductClassificationCode TransformedValue `json:"globalProductClassificationCode" bson:"globalProductClassificationCode"`
-	CountryOfSale                 TransformedValue `json:"countryOfSale" bson:"countryOfSale"`
-	ProductDescription            TransformedValue `json:"productDescription" bson:"productDescription"`
-	ProductName                   TransformedValue `json:"productName" bson:"productName"`
-	NetWeight                     TransformedValue `json:"netWeight" bson:"netWeight"`
-	Gtin                          TransformedValue `json:"gtin" bson:"gtin"`
-	Color                         TransformedValue `json:"color" bson:"color"`
-	CountryOfOrigin               TransformedValue `json:"countryOfOrigin" bson:"countryOfOrigin"`
-	Dimensions                    TransformedValue `json:"dimensions" bson:"dimensions"`
-	ModelName                     TransformedValue `json:"modelName" bson:"modelName"`
-	TaricCode                     TransformedValue `json:"taricCode" bson:"taricCode"`
-	ConditionOfTheProduct         TransformedValue `json:"conditionOfTheProduct" bson:"conditionOfTheProduct"`
-	NetContent                    TransformedValue `json:"netContent" bson:"netContent"`
-	NominalMaximumRPM             TransformedValue `json:"nominalMaximumRPM" bson:"nominalMaximumRPM"`
-	MaximumDrillingDiameter       TransformedValue `json:"maximumDrillingDiameter" bson:"maximumDrillingDiameter"`
-	NumberOfGears                 TransformedValue `json:"numberOfGears" bson:"numberOfGears"`
-	Torque                        TransformedValue `json:"torque" bson:"torque"`
-	WarrantyDuration              TransformedValue `json:"warrantyDuration" bson:"warrantyDuration"`
-	SafetyInstructions            TransformedValue `json:"safetyInstructions" bson:"safetyInstructions"`
+	BrandName                       *TransformedValue `json:"brandName,omitempty" bson:"brandName,omitempty"`
+	ProductImage                    *TransformedValue `json:"productImage,omitempty" bson:"productImage,omitempty"`
+	GlobalProductClassificationCode *TransformedValue `json:"globalProductClassificationCode,omitempty" bson:"globalProductClassificationCode,omitempty"`
+	CountryOfSale                   *TransformedValue `json:"countryOfSale,omitempty" bson:"countryOfSale,omitempty"`
+	ProductDescription              *TransformedValue `json:"productDescription,omitempty" bson:"productDescription,omitempty"`
+	ProductName                     *TransformedValue `json:"productName,omitempty" bson:"productName,omitempty"`
+	NetWeight                       *TransformedValue `json:"netWeight,omitempty" bson:"netWeight,omitempty"`
+	Gtin                            *TransformedValue `json:"gtin,omitempty" bson:"gtin,omitempty"`
+	Color                           *TransformedValue `json:"color,omitempty" bson:"color,omitempty"`
+	CountryOfOrigin                 *TransformedValue `json:"countryOfOrigin,omitempty" bson:"countryOfOrigin,omitempty"`
+	Dimensions                      *TransformedValue `json:"dimensions,omitempty" bson:"dimensions,omitempty"`
+	ModelName                       *TransformedValue `json:"modelName,omitempty" bson:"modelName,omitempty"`
+	TaricCode                       *TransformedValue `json:"taricCode,omitempty" bson:"taricCode,omitempty"`
+	ConditionOfTheProduct           *TransformedValue `json:"conditionOfTheProduct,omitempty" bson:"conditionOfTheProduct,omitempty"`
+	NetContent                      *TransformedValue `json:"netContent,omitempty" bson:"netContent,omitempty"`
+	NominalMaximumRPM               *TransformedValue `json:"nominalMaximumRPM,omitempty" bson:"nominalMaximumRPM,omitempty"`
+	MaximumDrillingDiameter         *TransformedValue `json:"maximumDrillingDiameter,omitempty" bson:"maximumDrillingDiameter,omitempty"`
+	NumberOfGears                   *TransformedValue `json:"numberOfGears,omitempty" bson:"numberOfGears,omitempty"`
+	Torque                          *TransformedValue `json:"torque,omitempty" bson:"torque,omitempty"`
+	WarrantyDuration                *TransformedValue `json:"warrantyDuration,omitempty" bson:"warrantyDuration,omitempty"`
+	SafetyInstructions              *TransformedValue `json:"safetyInstructions,omitempty" bson:"safetyInstructions,omitempty"`
+	ConsumerUnit                    *TransformedValue `json:"consumerUnit,omitempty" bson:"consumerUnit,omitempty"`
+	NetContentAndUnitOfMeasure      *TransformedValue `json:"netContentAndUnitOfMeasure,omitempty" bson:"netContentAndUnitOfMeasure,omitempty"`
+	YearOfSale                      *TransformedValue `json:"yearOfSale,omitempty" bson:"yearOfSale,omitempty"`
 }
 
 type Reparability struct {
-	ServiceAndRepairInstructions TransformedValue `json:"serviceAndRepairInstructions" bson:"serviceAndRepairInstructions"`
-	AvailabilityOfSpareParts     TransformedValue `json:"availabilityOfSpareParts" bson:"availabilityOfSpareParts"`
+	ServiceAndRepairInstructions *TransformedValue `json:"serviceAndRepairInstructions,omitempty" bson:"serviceAndRepairInstructions,omitempty"`
+	AvailabilityOfSpareParts     *TransformedValue `json:"availabilityOfSpareParts,omitempty" bson:"availabilityOfSpareParts,omitempty"`
 }
 
 type EnvironmentalImpact struct {
-	WaterConsumptionPerUnit  TransformedValue `json:"waterConsumptionPerUnit" bson:"waterConsumptionPerUnit"`
-	ChemicalConsumptionPerUnit TransformedValue `json:"chemicalConsumptionPerUnit" bson:"chemicalConsumptionPerUnit"`
-	Co2eEmissionsPerUnit     TransformedValue `json:"co2eEmissionsPerUnit" bson:"co2eEmissionsPerUnit"`
-	EnergyConsumptionPerUnit TransformedValue `json:"energyConsumptionPerUnit" bson:"energyConsumptionPerUnit"`
+	WaterConsumptionPerUnit                                 *TransformedValue `json:"waterConsumptionPerUnit,omitempty" bson:"waterConsumptionPerUnit,omitempty"`
+	ChemicalConsumptionPerUnit                              *TransformedValue `json:"chemicalConsumptionPerUnit,omitempty" bson:"chemicalConsumptionPerUnit,omitempty"`
+	Co2eEmissionsPerUnit                                    *TransformedValue `json:"co2eEmissionsPerUnit,omitempty" bson:"co2eEmissionsPerUnit,omitempty"`
+	EnergyConsumptionPerUnit                                *TransformedValue `json:"energyConsumptionPerUnit,omitempty" bson:"energyConsumptionPerUnit,omitempty"`
+	CleaningPerformanceAtLowTemperature                     *TransformedValue `json:"cleaningPerformanceAtLowTemperature,omitempty" bson:"cleaningPerformanceAtLowTemperature,omitempty"`
+	MinimumContentOfMaterialWithSustainabilityCertification *TransformedValue `json:"minimumContentOfMaterialWithSustainabilityCertification,omitempty" bson:"minimumContentOfMaterialWithSustainabilityCertification,omitempty"`
 }
 
 type ComplianceAndStandards struct {
-	CeMarking      TransformedValue `json:"ceMarking" bson:"ceMarking"`
-	RohsCompliance TransformedValue `json:"rohsCompliance" bson:"rohsCompliance"`
+	CeMarking      *TransformedValue `json:"ceMarking,omitempty" bson:"ceMarking,omitempty"`
+	RohsCompliance *TransformedValue `json:"rohsCompliance,omitempty" bson:"rohsCompliance,omitempty"`
 }
 
 type Certificates struct {
-	NameOfCertificate TransformedValue `json:"nameOfCertificate" bson:"nameOfCertificate"`
+	NameOfCertificate *TransformedValue `json:"nameOfCertificate,omitempty" bson:"nameOfCertificate,omitempty"`
 }
 
 type Recyclability struct {
-	RecyclingInstructions TransformedValue `json:"recyclingInstructions" bson:"recyclingInstructions"`
-	MaterialComposition   TransformedValue `json:"materialComposition" bson:"materialComposition"`
-	SubstancesOfConcern   TransformedValue `json:"substancesOfConcern" bson:"substancesOfConcern"`
+	RecyclingInstructions *TransformedValue `json:"recyclingInstructions,omitempty" bson:"recyclingInstructions,omitempty"`
+	MaterialComposition   *TransformedValue `json:"materialComposition,omitempty" bson:"materialComposition,omitempty"`
+	SubstancesOfConcern   *TransformedValue `json:"substancesOfConcern,omitempty" bson:"substancesOfConcern,omitempty"`
 }
 
 type EnergyUseAndEfficiency struct {
-	BatteryType           TransformedValue `json:"batteryType" bson:"batteryType"`
-	BatteryChargingTime   TransformedValue `json:"batteryChargingTime" bson:"batteryChargingTime"`
-	BatteryLife           TransformedValue `json:"batteryLife" bson:"batteryLife"`
-	ChargerType           TransformedValue `json:"chargerType" bson:"chargerType"`
-	MaximumElectricalPower TransformedValue `json:"maximumElectricalPower" bson:"maximumElectricalPower"`
-	MaximumVoltage        TransformedValue `json:"maximumVoltage" bson:"maximumVoltage"`
-	MaximumCurrent        TransformedValue `json:"maximumCurrent" bson:"maximumCurrent"`
-	PowerRating           TransformedValue `json:"powerRating" bson:"powerRating"`
-	DcVoltage             TransformedValue `json:"dcVoltage" bson:"dcVoltage"`
+	BatteryType            *TransformedValue `json:"batteryType,omitempty" bson:"batteryType,omitempty"`
+	BatteryChargingTime    *TransformedValue `json:"batteryChargingTime,omitempty" bson:"batteryChargingTime,omitempty"`
+	BatteryLife            *TransformedValue `json:"batteryLife,omitempty" bson:"batteryLife,omitempty"`
+	ChargerType            *TransformedValue `json:"chargerType,omitempty" bson:"chargerType,omitempty"`
+	MaximumElectricalPower *TransformedValue `json:"maximumElectricalPower,omitempty" bson:"maximumElectricalPower,omitempty"`
+	MaximumVoltage         *TransformedValue `json:"maximumVoltage,omitempty" bson:"maximumVoltage,omitempty"`
+	MaximumCurrent         *TransformedValue `json:"maximumCurrent,omitempty" bson:"maximumCurrent,omitempty"`
+	PowerRating            *TransformedValue `json:"powerRating,omitempty" bson:"powerRating,omitempty"`
+	DcVoltage              *TransformedValue `json:"dcVoltage,omitempty" bson:"dcVoltage,omitempty"`
 }
 
 type ComponentInformation struct {
-	ComponentDescription TransformedValue `json:"componentDescription" bson:"componentDescription"`
-	ComponentGTIN        TransformedValue `json:"componentGTIN" bson:"componentGTIN"`
-	LinkToDPP            TransformedValue `json:"linkToDPP" bson:"linkToDPP"`
+	ComponentDescription *TransformedValue `json:"componentDescription,omitempty" bson:"componentDescription,omitempty"`
+	ComponentGTIN        *TransformedValue `json:"componentGTIN,omitempty" bson:"componentGTIN,omitempty"`
+	LinkToDPP            *TransformedValue `json:"linkToDPP,omitempty" bson:"linkToDPP,omitempty"`
 }
 
 type EconomicOperator struct {
-	CompanyName      TransformedValue `json:"companyName" bson:"companyName"`
-	Gln              TransformedValue `json:"gln" bson:"gln"`
-	EoriNumber       TransformedValue `json:"eoriNumber" bson:"eoriNumber"`
-	AddressLine1     TransformedValue `json:"addressLine1" bson:"addressLine1"`
-	AddressLine2     TransformedValue `json:"addressLine2" bson:"addressLine2"`
-	ContactInformation TransformedValue `json:"contactInformation" bson:"contactInformation"`
+	CompanyName        *TransformedValue `json:"companyName,omitempty" bson:"companyName,omitempty"`
+	Gln                *TransformedValue `json:"gln,omitempty" bson:"gln,omitempty"`
+	EoriNumber         *TransformedValue `json:"eoriNumber,omitempty" bson:"eoriNumber,omitempty"`
+	AddressLine1       *TransformedValue `json:"addressLine1,omitempty" bson:"addressLine1,omitempty"`
+	AddressLine2       *TransformedValue `json:"addressLine2,omitempty" bson:"addressLine2,omitempty"`
+	ContactInformation *TransformedValue `json:"contactInformation,omitempty" bson:"contactInformation,omitempty"`
 }
 
 type RepairInformation struct {
-	ReasonForRepair TransformedValue `json:"reasonForRepair" bson:"reasonForRepair"`
-	PerformedAction TransformedValue `json:"performedAction" bson:"performedAction"`
-	MaterialsUsed   TransformedValue `json:"materialsUsed" bson:"materialsUsed"`
-	DateOfRepair    TransformedValue `json:"dateOfRepair" bson:"dateOfRepair"`
+	ReasonForRepair *TransformedValue `json:"reasonForRepair,omitempty" bson:"reasonForRepair,omitempty"`
+	PerformedAction *TransformedValue `json:"performedAction,omitempty" bson:"performedAction,omitempty"`
+	MaterialsUsed   *TransformedValue `json:"materialsUsed,omitempty" bson:"materialsUsed,omitempty"`
+	DateOfRepair    *TransformedValue `json:"dateOfRepair,omitempty" bson:"dateOfRepair,omitempty"`
 }
 
 type RefurbishmentInformation struct {
-	PerformedAction     TransformedValue `json:"performedAction" bson:"performedAction"`
-	MaterialsUsed       TransformedValue `json:"materialsUsed" bson:"materialsUsed"`
-	DateOfRefurbishment TransformedValue `json:"dateOfRefurbishment" bson:"dateOfRefurbishment"`
+	PerformedAction     *TransformedValue `json:"performedAction,omitempty" bson:"performedAction,omitempty"`
+	MaterialsUsed       *TransformedValue `json:"materialsUsed,omitempty" bson:"materialsUsed,omitempty"`
+	DateOfRefurbishment *TransformedValue `json:"dateOfRefurbishment,omitempty" bson:"dateOfRefurbishment,omitempty"`
 }
 
 type RecyclingInformation struct {
-	PerformedAction TransformedValue `json:"performedAction" bson:"performedAction"`
-	DateOfRecycling TransformedValue `json:"dateOfRecycling" bson:"dateOfRecycling"`
+	PerformedAction *TransformedValue `json:"performedAction,omitempty" bson:"performedAction,omitempty"`
+	DateOfRecycling *TransformedValue `json:"dateOfRecycling,omitempty" bson:"dateOfRecycling,omitempty"`
+}
+
+type ConsumerInformation struct {
+	MarketingClaim *TransformedValue `json:"marketingClaim,omitempty" bson:"marketingClaim,omitempty"`
+}
+
+type DosageInstructions struct {
+	UsageAndDisposalInfo *TransformedValue `json:"usageAndDisposalInfo,omitempty" bson:"usageAndDisposalInfo,omitempty"`
+}
+
+type Ingredients struct {
+	IngredientList                          *TransformedValue `json:"ingredientList,omitempty" bson:"ingredientList,omitempty"`
+	MinimumContentOfBiodegradableSubstances *TransformedValue `json:"minimumContentOfBiodegradableSubstances,omitempty" bson:"minimumContentOfBiodegradableSubstances,omitempty"`
+	PresenceOfNonBiodegradableMicroplastics *TransformedValue `json:"presenceOfNonBiodegradableMicroplastics,omitempty" bson:"presenceOfNonBiodegradableMicroplastics,omitempty"`
+}
+
+type ChemicalConsumption struct {
+	Amount     *TransformedValue `json:"amount,omitempty" bson:"amount,omitempty"`
+	Ingredient *TransformedValue `json:"ingredient,omitempty" bson:"ingredient,omitempty"`
+}
+
+type Packaging struct {
+	ChemicalConsumption    *ChemicalConsumption `json:"chemicalConsumption,omitempty" bson:"chemicalConsumption,omitempty"`
+	DisposalInstructions   *TransformedValue    `json:"disposalInstructions,omitempty" bson:"disposalInstructions,omitempty"`
+	MinimumRecycledContent *TransformedValue    `json:"minimumRecycledContent,omitempty" bson:"minimumRecycledContent,omitempty"`
+	RecyclablePackaging    *TransformedValue    `json:"recyclablePackaging,omitempty" bson:"recyclablePackaging,omitempty"`
 }
