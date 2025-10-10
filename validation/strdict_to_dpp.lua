@@ -100,7 +100,7 @@ for _,v in pairs(DPP_examples) do
   RES[v.productOverview.brandName] = parse(data_types, v)
 end
 
-write(JSON.encode(RES))
+print(JSON.encode(RES))
 
 
 -- {
