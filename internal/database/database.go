@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"log"
+	"os"
 	"sync"
 	"time"
 
@@ -21,7 +22,11 @@ const (
 
 func ConnectDB() (*mongo.Client, error) {
 	mongoOnce.Do(func() {
-		clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+		mongoURI := os.Getenv("MONGODB_URI")
+		if mongoURI == "" {
+			mongoURI = "mongodb://localhost:27017"
+		}
+		clientOptions := options.Client().ApplyURI(mongoURI)
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 

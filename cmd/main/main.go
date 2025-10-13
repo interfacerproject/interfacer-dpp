@@ -11,7 +11,7 @@ import (
 func main() {
 	router := gin.Default()
 
-    router.Use(cors.New(cors.Config{
+	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"}, // Allows all origins
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
@@ -26,5 +26,5 @@ func main() {
 	router.DELETE("/dpp/:id", handler.DeleteDPP)
 	router.GET("/dpps", handler.GetAllDPPs)
 
-	router.Run("localhost:8080")
+	router.Run(":8080")
 }
