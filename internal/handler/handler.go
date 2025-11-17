@@ -8,10 +8,10 @@ import (
 	"net/http"
 	"time"
 
-	// b64 "encoding/base64"
+	b64 "encoding/base64"
 
 	"github.com/gin-gonic/gin"
-	// "github.com/interfacerproject/interfacer-dpp/internal/auth"
+	"github.com/interfacerproject/interfacer-dpp/internal/auth"
 	"github.com/interfacerproject/interfacer-dpp/internal/database"
 	"github.com/interfacerproject/interfacer-dpp/internal/model"
 	"github.com/oklog/ulid/v2"
@@ -44,17 +44,16 @@ func CreateDPP(c *gin.Context) {
 	}
 	log.Printf("Request Body: %s\n", string(body))
 
-	// Verify signature request
-	// zenroomData := auth.ZenroomData{
-	// 	Gql:            b64.StdEncoding.EncodeToString(body),
-	// 	EdDSASignature: c.Request.Header.Get("did-sign"),
-	// 	EdDSAPublicKey: c.Request.Header.Get("did-pk"),
-	// }
+	zenroomData := auth.ZenroomData{
+		Gql:            b64.StdEncoding.EncodeToString(body),
+		EdDSASignature: c.Request.Header.Get("did-sign"),
+		EdDSAPublicKey: c.Request.Header.Get("did-pk"),
+	}
 
-	// if err := zenroomData.IsAuth(); err != nil {
-	// 	c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed", "details": err.Error()})
-	// 	return
-	// }
+	if err := zenroomData.IsAuth(); err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed", "details": err.Error()})
+		return
+	}
 
 	var dpp model.DigitalProductPassport
 	if err := json.Unmarshal(body, &dpp); err != nil {
