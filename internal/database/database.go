@@ -16,7 +16,7 @@ var clientInstanceError error
 var mongoOnce sync.Once
 
 const (
-	DBName         = "dpp_db"
+	DBName         = "dppp_dbd"
 	CollectionName = "passports"
 )
 

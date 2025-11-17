@@ -2,10 +2,16 @@ package handler
 
 import (
 	"context"
+	"encoding/json"
+	"io"
+	"log"
 	"net/http"
 	"time"
 
+	// b64 "encoding/base64"
+
 	"github.com/gin-gonic/gin"
+	// "github.com/interfacerproject/interfacer-dpp/internal/auth"
 	"github.com/interfacerproject/interfacer-dpp/internal/database"
 	"github.com/interfacerproject/interfacer-dpp/internal/model"
 	"github.com/oklog/ulid/v2"
@@ -31,8 +37,27 @@ func CreateDPP(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
+	body, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	log.Printf("Request Body: %s\n", string(body))
+
+	// Verify signature request
+	// zenroomData := auth.ZenroomData{
+	// 	Gql:            b64.StdEncoding.EncodeToString(body),
+	// 	EdDSASignature: c.Request.Header.Get("did-sign"),
+	// 	EdDSAPublicKey: c.Request.Header.Get("did-pk"),
+	// }
+
+	// if err := zenroomData.IsAuth(); err != nil {
+	// 	c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed", "details": err.Error()})
+	// 	return
+	// }
+
 	var dpp model.DigitalProductPassport
-	if err := c.BindJSON(&dpp); err != nil {
+	if err := json.Unmarshal(body, &dpp); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -162,7 +187,7 @@ func GetAllDPPs(c *gin.Context) {
 	var dpps []model.DigitalProductPassport
 	cursor, err := dppCollection.Find(ctx, bson.M{})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error retrieving documents"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error retrieving documents", "details": err.Error()})
 		return
 	}
 	defer cursor.Close(ctx)
