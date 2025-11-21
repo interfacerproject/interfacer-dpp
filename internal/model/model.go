@@ -2,12 +2,23 @@ package model
 
 import (
 	"github.com/oklog/ulid/v2"
+	"time"
 )
 
 type TransformedValue struct {
 	Type  string `json:"type" bson:"type"`
 	Value any    `json:"value" bson:"value"`
 	Units string `json:"units,omitempty" bson:"units,omitempty"`
+}
+
+type Attachment struct {
+	ID          string    `bson:"id" json:"id"`
+	FileName    string    `bson:"file_name" json:"fileName"`
+	ContentType string    `bson:"content_type" json:"contentType"`
+	URL         string    `bson:"url" json:"url"`
+	Size        int64     `bson:"size" json:"size"`
+	Checksum    string    `bson:"checksum" json:"checksum"`
+	UploadedAt  time.Time `bson:"uploaded_at" json:"uploadedAt"`
 }
 
 type DigitalProductPassport struct {

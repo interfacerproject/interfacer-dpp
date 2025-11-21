@@ -1,11 +1,16 @@
 package handler
 
 import (
+	"bytes"
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"path/filepath"
 	"time"
 
 	b64 "encoding/base64"
@@ -17,6 +22,9 @@ import (
 	"github.com/oklog/ulid/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
+
+	"github.com/interfacerproject/interfacer-dpp/internal/storage"
+	"github.com/minio/minio-go/v7"
 )
 
 func getCollection() (*mongo.Collection, error) {
@@ -197,4 +205,53 @@ func GetAllDPPs(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, dpps)
+}
+
+func UploadFile(c *gin.Context) {
+	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, 10<<20)
+
+	file, header, err := c.Request.FormFile("file")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "File is required", "details": err.Error()})
+		return
+	}
+	defer file.Close()
+
+	hasher := sha256.New()
+	buffer := bytes.NewBuffer(nil)
+	if _, err := io.Copy(io.MultiWriter(hasher, buffer), file); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error processing file"})
+		return
+	}
+	checksum := hex.EncodeToString(hasher.Sum(nil))
+
+	ext := filepath.Ext(header.Filename)
+	fileID := ulid.Make().String()
+	objectName := fmt.Sprintf("%s%s", fileID, ext)
+	contentType := header.Header.Get("Content-Type")
+
+	ctx := context.Background()
+	_, err = storage.MinioClient.PutObject(ctx, storage.BucketName, objectName, buffer, int64(buffer.Len()), minio.PutObjectOptions{
+		ContentType: contentType,
+	})
+	if err != nil {
+		log.Printf("MinIO upload error: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to upload file to storage"})
+		return
+	}
+
+	// PUBLIC_ASSET_URL
+	fileURL := fmt.Sprintf("http://localhost:9000/%s/%s", storage.BucketName, objectName)
+	
+	attachment := model.Attachment{
+		ID:          fileID,
+		FileName:    header.Filename,
+		ContentType: contentType,
+		URL:         fileURL,
+		Size:        header.Size,
+		Checksum:    checksum,
+		UploadedAt:  time.Now(),
+	}
+
+	c.JSON(http.StatusCreated, attachment)
 }
