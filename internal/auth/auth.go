@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	zenroom "github.com/dyne/Zenroom/bindings/golang/zenroom"
 )
@@ -25,7 +26,15 @@ type ZenroomResult struct {
 	Output []string `json:"output"`
 }
 
-func (data *ZenroomData) VerifyDid(context string, baseUrl string) error {
+func (data *ZenroomData) VerifyDid() error {
+	baseUrl := os.Getenv("BASE_DID_URL")
+	if baseUrl == "" {
+		baseUrl = "https://explorer.did.dyne.org/details/"
+	}
+	context := os.Getenv("DID_CONTEXT_PATH")
+	if context == "" {
+		context = "did:dyne:ifacer"
+	}
 	url := fmt.Sprintf("%s%s:%s", baseUrl, context, data.EdDSAPublicKey)
 	log.Printf("Fetching %s\n", url)
 	resp, err := http.Get(url)
@@ -33,7 +42,7 @@ func (data *ZenroomData) VerifyDid(context string, baseUrl string) error {
 		return err
 	}
 	if resp.StatusCode != 200 {
-		return fmt.Errorf("Problem fetching DID, status: %d", resp.StatusCode)
+		return fmt.Errorf("problem fetching DID, status: %d", resp.StatusCode)
 	}
 	return nil
 }
@@ -55,7 +64,7 @@ func (data *ZenroomData) IsAuth() error {
 		return err
 	}
 	if zenroomResult.Output[0] != "1" {
-		return errors.New("Signature is not authentic")
+		return errors.New("signature is not authentic")
 	}
 	return nil
 }

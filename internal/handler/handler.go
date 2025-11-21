@@ -58,6 +58,11 @@ func CreateDPP(c *gin.Context) {
 		EdDSAPublicKey: c.Request.Header.Get("did-pk"),
 	}
 
+	if err := zenroomData.VerifyDid(); err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "DID verification failed", "details": err.Error()})
+		return
+	}
+
 	if err := zenroomData.IsAuth(); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed", "details": err.Error()})
 		return
@@ -224,6 +229,34 @@ func UploadFile(c *gin.Context) {
 		return
 	}
 	checksum := hex.EncodeToString(hasher.Sum(nil))
+
+
+	signature := c.Request.Header.Get("did-sign")
+	publicKey := c.Request.Header.Get("did-pk")
+
+	if signature == "" || publicKey == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Missing authentication headers (did-sign, did-pk)"})
+		return
+	}
+
+	zenroomData := auth.ZenroomData{
+		Gql:            checksum,
+		EdDSASignature: signature,
+		EdDSAPublicKey: publicKey,
+	}
+
+	if err := zenroomData.VerifyDid(); err != nil { 
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "DID verification failed", "details": err.Error()})
+		return
+	}
+
+
+	if err := zenroomData.IsAuth(); err != nil {
+		log.Printf("Auth failed for file upload: %v", err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed", "details": err.Error()})
+		return
+	}
+
 
 	ext := filepath.Ext(header.Filename)
 	fileID := ulid.Make().String()
