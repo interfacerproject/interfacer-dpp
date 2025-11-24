@@ -17,7 +17,6 @@ func main() {
 		log.Println("No .env file found, proceeding with environment variables")
 	}
 
-
 	storage.InitMinio()
 
 	router := gin.Default()
@@ -37,6 +36,7 @@ func main() {
 	router.DELETE("/dpp/:id", handler.DeleteDPP)
 	router.GET("/dpps", handler.GetAllDPPs)
 	router.POST("/upload", handler.UploadFile)
+	router.GET("/file/:id", handler.GetFile)
 
 	router.Run(":8080")
 }

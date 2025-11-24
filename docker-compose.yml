@@ -15,8 +15,8 @@ services:
     image: minio/minio:latest
     container_name: dpp-minio
     ports:
-      - "9000:9000" # API port
-      - "9001:9001" # Console UI port
+      - "9000:9000" 
+      - "9001:9001" 
     environment:
       - MINIO_ROOT_USER=admin
       - MINIO_ROOT_PASSWORD=passwordsegreta
@@ -26,7 +26,6 @@ services:
     networks:
       - dpp-network
 
-  # Job opzionale per creare il bucket automaticamente all'avvio
   createbuckets:
     image: minio/mc
     depends_on:
@@ -53,6 +52,7 @@ services:
       - MINIO_SECRET_KEY=passwordsegreta
       - MINIO_BUCKET=dpp-assets
       - MINIO_USE_SSL=false
+      - SERVER_URL=http://localhost:8080
     depends_on:
       - mongodb
       - minio

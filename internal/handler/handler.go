@@ -212,6 +212,65 @@ func GetAllDPPs(c *gin.Context) {
 	c.JSON(http.StatusOK, dpps)
 }
 
+func GetFile(c *gin.Context) {
+	fileID := c.Param("id")
+	if fileID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "File ID is required"})
+		return
+	}
+
+	ctx := context.Background()
+
+	// List objects with the fileID prefix to find the file with any extension
+	objectCh := storage.MinioClient.ListObjects(ctx, storage.BucketName, minio.ListObjectsOptions{
+		Prefix: fileID,
+	})
+
+	var objectName string
+	for object := range objectCh {
+		if object.Err != nil {
+			log.Printf("Error listing objects: %v", object.Err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error finding file"})
+			return
+		}
+		if object.Key != "" {
+			objectName = object.Key
+			break
+		}
+	}
+
+	if objectName == "" {
+		c.JSON(http.StatusNotFound, gin.H{"error": "File not found"})
+		return
+	}
+
+	// Get the object from MinIO
+	obj, err := storage.MinioClient.GetObject(ctx, storage.BucketName, objectName, minio.GetObjectOptions{})
+	if err != nil {
+		log.Printf("Error getting object: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error retrieving file"})
+		return
+	}
+	defer obj.Close()
+
+	// Get object info for content type
+	objInfo, err := obj.Stat()
+	if err != nil {
+		log.Printf("Error getting object info: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error retrieving file info"})
+		return
+	}
+
+	// Set content type and stream the file
+	c.Header("Content-Type", objInfo.ContentType)
+	c.Header("Content-Disposition", fmt.Sprintf("inline; filename=\"%s\"", objectName))
+
+	if _, err := io.Copy(c.Writer, obj); err != nil {
+		log.Printf("Error streaming file: %v", err)
+		return
+	}
+}
+
 func UploadFile(c *gin.Context) {
 	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, 10<<20)
 
@@ -230,7 +289,6 @@ func UploadFile(c *gin.Context) {
 	}
 	checksum := hex.EncodeToString(hasher.Sum(nil))
 
-
 	signature := c.Request.Header.Get("did-sign")
 	publicKey := c.Request.Header.Get("did-pk")
 
@@ -245,18 +303,16 @@ func UploadFile(c *gin.Context) {
 		EdDSAPublicKey: publicKey,
 	}
 
-	if err := zenroomData.VerifyDid(); err != nil { 
+	if err := zenroomData.VerifyDid(); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "DID verification failed", "details": err.Error()})
 		return
 	}
-
 
 	if err := zenroomData.IsAuth(); err != nil {
 		log.Printf("Auth failed for file upload: %v", err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed", "details": err.Error()})
 		return
 	}
-
 
 	ext := filepath.Ext(header.Filename)
 	fileID := ulid.Make().String()
@@ -273,9 +329,8 @@ func UploadFile(c *gin.Context) {
 		return
 	}
 
-	// PUBLIC_ASSET_URL
-	fileURL := fmt.Sprintf("http://localhost:9000/%s/%s", storage.BucketName, objectName)
-	
+	fileURL := fmt.Sprintf("%s/file/%s", storage.ServerURL, fileID)
+
 	attachment := model.Attachment{
 		ID:          fileID,
 		FileName:    header.Filename,
