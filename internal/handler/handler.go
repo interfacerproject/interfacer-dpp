@@ -45,28 +45,40 @@ func CreateDPP(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
+	log.Println("=== CreateDPP called ===")
+	
 	body, err := io.ReadAll(c.Request.Body)
 	if err != nil {
+		log.Printf("Error reading body: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	log.Printf("Request Body: %s\n", string(body))
+	log.Printf("Request Body received (%d bytes)", len(body))
 
 	zenroomData := auth.ZenroomData{
 		Gql:            b64.StdEncoding.EncodeToString(body),
 		EdDSASignature: c.Request.Header.Get("did-sign"),
 		EdDSAPublicKey: c.Request.Header.Get("did-pk"),
 	}
+	
+	log.Printf("Headers - did-sign present: %v, did-pk present: %v", zenroomData.EdDSASignature != "", zenroomData.EdDSAPublicKey != "")
+	log.Println("Starting VerifyDid()...")
 
 	if err := zenroomData.VerifyDid(); err != nil {
+		log.Printf("VerifyDid failed: %v", err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "DID verification failed", "details": err.Error()})
 		return
 	}
 
+	log.Println("VerifyDid succeeded, starting IsAuth()...")
+	
 	if err := zenroomData.IsAuth(); err != nil {
+		log.Printf("IsAuth failed: %v", err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed", "details": err.Error()})
 		return
 	}
+	
+	log.Println("Auth successful, proceeding with insert...")
 
 	var dpp model.DigitalProductPassport
 	if err := json.Unmarshal(body, &dpp); err != nil {
