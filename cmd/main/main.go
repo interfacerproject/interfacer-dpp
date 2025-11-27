@@ -22,11 +22,11 @@ func main() {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"}, // Allows all origins
+		AllowAllOrigins:  true, // This properly allows all origins without credentials conflict
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "did-sign", "did-pk"},
 		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
+		AllowCredentials: false, // Must be false when allowing all origins
 		MaxAge:           12 * time.Hour,
 	}))
 
