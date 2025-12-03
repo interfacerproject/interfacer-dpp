@@ -53,7 +53,7 @@ func (data *ZenroomData) IsAuth() error {
 
 	jsonData, _ := json.Marshal(data)
 
-	log.Printf("Calling Zenroom with data length: %d", len(jsonData))
+	log.Printf("Calling Zenroom data: %s\n", string(jsonData))
 
 	type zenResult struct {
 		result  zenroom.ZenResult
