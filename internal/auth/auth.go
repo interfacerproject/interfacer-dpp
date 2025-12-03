@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	zenroom "github.com/dyne/Zenroom/bindings/golang/zenroom"
 )
@@ -47,24 +48,47 @@ func (data *ZenroomData) VerifyDid() error {
 	return nil
 }
 
-// Used to verify the signature with `zenflows-crypto`
 func (data *ZenroomData) IsAuth() error {
 	var err error
 
 	jsonData, _ := json.Marshal(data)
 
-	// Verify the signature
-	result, success := zenroom.ZencodeExec(VERIFY, "", string(jsonData), "")
-	if !success {
-		return errors.New(result.Logs)
+	log.Printf("Calling Zenroom with data length: %d", len(jsonData))
+
+	type zenResult struct {
+		result  zenroom.ZenResult
+		success bool
 	}
-	var zenroomResult ZenroomResult
-	err = json.Unmarshal([]byte(result.Output), &zenroomResult)
-	if err != nil {
-		return err
+	resultChan := make(chan zenResult, 1)
+
+	go func() {
+		result, success := zenroom.ZencodeExec(VERIFY, "", string(jsonData), "")
+		resultChan <- zenResult{result, success}
+	}()
+
+	select {
+	case res := <-resultChan:
+		log.Printf("Zenroom completed, success: %v", res.success)
+		if !res.success {
+			log.Printf("Zenroom logs: %s", res.result.Logs)
+			return errors.New(res.result.Logs)
+		}
+
+		var zenroomResult ZenroomResult
+		err = json.Unmarshal([]byte(res.result.Output), &zenroomResult)
+		if err != nil {
+			log.Printf("Error unmarshaling zenroom output: %v", err)
+			return err
+		}
+		if len(zenroomResult.Output) == 0 || zenroomResult.Output[0] != "1" {
+			log.Printf("Signature not authentic, output: %v", zenroomResult.Output)
+			return errors.New("signature is not authentic")
+		}
+		log.Println("Signature verified successfully")
+		return nil
+
+	case <-time.After(30 * time.Second):
+		log.Println("Zenroom execution timed out after 30 seconds")
+		return errors.New("signature verification timed out")
 	}
-	if zenroomResult.Output[0] != "1" {
-		return errors.New("signature is not authentic")
-	}
-	return nil
 }
