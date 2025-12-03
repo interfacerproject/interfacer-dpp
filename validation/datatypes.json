@@ -22,7 +22,7 @@
     "maximumVoltage",
     "powerRating",
     "chemicalConsumptionPerUnit",
-    "co2\neEmissionsPerUnit",
+    "co2eEmissionsPerUnit",
     "energyConsumptionPerUnit",
     "waterConsumptionPerUnit",
     "netContent",
