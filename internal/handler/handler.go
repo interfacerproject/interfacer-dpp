@@ -336,7 +336,7 @@ func UploadFile(c *gin.Context) {
 		ContentType: contentType,
 	})
 	if err != nil {
-		log.Printf("MinIO upload error: %v", err)
+		log.Printf("MinIO upload error: %v, bucket: %s", err, storage.BucketName)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to upload file to storage"})
 		return
 	}
