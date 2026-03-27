@@ -1,9 +1,23 @@
 FROM golang:1.24-bullseye AS builder
 ENV GONOPROXY=
 
-RUN wget -O /usr/local/zenroom-zencode-exec \
-    https://github.com/dyne/zenroom/releases/latest/download/zencode-exec \
- && chmod +x /usr/local/zenroom-zencode-exec
+# Install build dependencies for zencode-exec
+RUN apt-get update && apt-get install -y build-essential cmake git
+
+# Download or build zencode-exec based on architecture
+RUN ARCH=$(uname -m) && \
+    if [ "$ARCH" = "x86_64" ]; then \
+        wget -O /usr/local/zenroom-zencode-exec \
+            "https://github.com/dyne/zenroom/releases/latest/download/zencode-exec" && \
+        chmod +x /usr/local/zenroom-zencode-exec; \
+    else \
+        echo "Building zencode-exec from source for $ARCH..." && \
+        git clone --depth 1 https://github.com/dyne/Zenroom.git /tmp/zenroom && \
+        cd /tmp/zenroom && \
+        make linux-zencode-exec && \
+        cp zencode-exec /usr/local/zenroom-zencode-exec && \
+        chmod +x /usr/local/zenroom-zencode-exec; \
+    fi
 
 WORKDIR /app
 COPY go.mod go.sum ./

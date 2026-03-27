@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/interfacerproject/interfacer-dpp/internal/database"
 	"github.com/interfacerproject/interfacer-dpp/internal/handler"
 	"github.com/interfacerproject/interfacer-dpp/internal/storage"
 	"github.com/joho/godotenv"
@@ -18,6 +19,13 @@ func main() {
 	}
 
 	storage.InitMinio()
+
+	// Ensure MongoDB indexes
+	dbClient, err := database.ConnectDB()
+	if err != nil {
+		log.Fatalf("Failed to connect to MongoDB: %v", err)
+	}
+	database.EnsureIndexes(dbClient)
 
 	router := gin.Default()
 
@@ -34,6 +42,9 @@ func main() {
 	router.GET("/dpp/:id", handler.GetDPP)
 	router.PUT("/dpp/:id", handler.UpdateDPP)
 	router.DELETE("/dpp/:id", handler.DeleteDPP)
+	router.PUT("/dpp/:id/status", handler.UpdateDPPStatus)
+	router.POST("/dpp/:id/attachments", handler.AddAttachment)
+	router.DELETE("/dpp/:id/attachments/:attachmentId", handler.DeleteAttachment)
 	router.GET("/dpps", handler.GetAllDPPs)
 	router.POST("/upload", handler.UploadFile)
 	router.GET("/file/:id", handler.GetFile)
