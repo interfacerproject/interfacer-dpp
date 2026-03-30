@@ -32,7 +32,7 @@ func main() {
 	router.Use(cors.New(cors.Config{
 		AllowAllOrigins:  true, // This properly allows all origins without credentials conflict
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "did-sign", "did-pk"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "did-sign", "did-pk", "x-user-id"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: false, // Must be false when allowing all origins
 		MaxAge:           12 * time.Hour,

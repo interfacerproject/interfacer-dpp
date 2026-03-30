@@ -21,7 +21,7 @@ import (
 	"github.com/interfacerproject/interfacer-dpp/internal/database"
 	"github.com/interfacerproject/interfacer-dpp/internal/model"
 	"github.com/oklog/ulid/v2"
-	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 
@@ -48,7 +48,7 @@ func CreateDPP(c *gin.Context) {
 	defer cancel()
 
 	log.Println("=== CreateDPP called ===")
-	
+
 	body, err := io.ReadAll(c.Request.Body)
 	if err != nil {
 		log.Printf("Error reading body: %v", err)
@@ -62,7 +62,7 @@ func CreateDPP(c *gin.Context) {
 		EdDSASignature: c.Request.Header.Get("did-sign"),
 		EdDSAPublicKey: c.Request.Header.Get("did-pk"),
 	}
-	
+
 	log.Printf("Headers - did-sign present: %v, did-pk present: %v", zenroomData.EdDSASignature != "", zenroomData.EdDSAPublicKey != "")
 	log.Println("Starting VerifyDid()...")
 
@@ -73,13 +73,13 @@ func CreateDPP(c *gin.Context) {
 	}
 
 	log.Println("VerifyDid succeeded, starting IsAuth()...")
-	
+
 	if err := zenroomData.IsAuth(); err != nil {
 		log.Printf("IsAuth failed: %v", err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed", "details": err.Error()})
 		return
 	}
-	
+
 	log.Println("Auth successful, proceeding with insert...")
 
 	var dpp model.DigitalProductPassport
@@ -89,7 +89,13 @@ func CreateDPP(c *gin.Context) {
 	}
 
 	dpp.ID = ulid.Make()
-	dpp.CreatedBy = c.Request.Header.Get("did-pk")
+	// Prefer x-user-id (ULID) for createdBy so frontend can filter by user ID.
+	// Fall back to did-pk (public key) for backward compatibility.
+	if uid := c.Request.Header.Get("x-user-id"); uid != "" {
+		dpp.CreatedBy = uid
+	} else {
+		dpp.CreatedBy = c.Request.Header.Get("did-pk")
+	}
 	now := time.Now()
 	dpp.CreatedAt = now
 	dpp.UpdatedAt = now

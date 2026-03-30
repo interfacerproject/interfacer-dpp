@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
@@ -66,7 +66,7 @@ func EnsureIndexes(client *mongo.Client) {
 		{Keys: bson.D{{Key: "status", Value: 1}}},
 		{Keys: bson.D{{Key: "createdAt", Value: -1}}},
 		{
-			Keys:    bson.D{{Key: "productId", Value: 1}, {Key: "batchId", Value: 1}},
+			Keys: bson.D{{Key: "productId", Value: 1}, {Key: "batchId", Value: 1}},
 			Options: options.Index().SetUnique(true).SetPartialFilterExpression(bson.M{
 				"batchId": bson.M{"$exists": true, "$ne": ""},
 			}),
