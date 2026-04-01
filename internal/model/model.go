@@ -1,8 +1,9 @@
 package model
 
 import (
-	"github.com/oklog/ulid/v2"
 	"time"
+
+	"github.com/oklog/ulid/v2"
 )
 
 type TransformedValue struct {
@@ -23,6 +24,14 @@ type Attachment struct {
 
 type DigitalProductPassport struct {
 	ID                       ulid.ULID                 `json:"id" bson:"_id"`
+	ProductID                string                    `json:"productId,omitempty" bson:"productId,omitempty"`
+	BatchType                string                    `json:"batchType,omitempty" bson:"batchType,omitempty"`
+	BatchID                  string                    `json:"batchId,omitempty" bson:"batchId,omitempty"`
+	CreatedBy                string                    `json:"createdBy,omitempty" bson:"createdBy,omitempty"`
+	Status                   string                    `json:"status,omitempty" bson:"status,omitempty"`
+	CreatedAt                time.Time                 `json:"createdAt" bson:"createdAt"`
+	UpdatedAt                time.Time                 `json:"updatedAt" bson:"updatedAt"`
+	Attachments              map[string][]Attachment   `json:"attachments,omitempty" bson:"attachments,omitempty"`
 	ProductOverview          *ProductOverview          `json:"productOverview,omitempty" bson:"productOverview,omitempty"`
 	Reparability             *Reparability             `json:"reparability,omitempty" bson:"reparability,omitempty"`
 	EnvironmentalImpact      *EnvironmentalImpact      `json:"environmentalImpact,omitempty" bson:"environmentalImpact,omitempty"`

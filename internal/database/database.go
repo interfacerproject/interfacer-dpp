@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
@@ -52,4 +53,30 @@ func ConnectDB() (*mongo.Client, error) {
 func GetCollection(client *mongo.Client) *mongo.Collection {
 	collection := client.Database(DBName).Collection(CollectionName)
 	return collection
+}
+
+func EnsureIndexes(client *mongo.Client) {
+	collection := GetCollection(client)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	indexes := []mongo.IndexModel{
+		{Keys: bson.D{{Key: "productId", Value: 1}}},
+		{Keys: bson.D{{Key: "createdBy", Value: 1}}},
+		{Keys: bson.D{{Key: "status", Value: 1}}},
+		{Keys: bson.D{{Key: "createdAt", Value: -1}}},
+		{
+			Keys: bson.D{{Key: "productId", Value: 1}, {Key: "batchId", Value: 1}},
+			Options: options.Index().SetUnique(true).SetPartialFilterExpression(bson.M{
+				"batchId": bson.M{"$exists": true, "$ne": ""},
+			}),
+		},
+	}
+
+	_, err := collection.Indexes().CreateMany(ctx, indexes)
+	if err != nil {
+		log.Printf("Warning: failed to create indexes: %v", err)
+	} else {
+		log.Println("MongoDB indexes ensured")
+	}
 }
