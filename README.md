@@ -133,14 +133,22 @@ The API will be available at `http://localhost:8080`
 
 ### Environment Variables
 
-The application uses the following default configuration:
+The application is configured through environment variables. Copy `.env.example` to `.env` and adjust as needed:
 
-- **MongoDB URI**: `mongodb://localhost:27017`
-- **Database Name**: `dpp_db`
-- **Collection Name**: `passports`
-- **Server Port**: `8080`
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MONGODB_URI` | `mongodb://localhost:27017` | MongoDB connection URI |
+| `DPP_PUBLIC_URL` | `https://interfacer.dyne.org/dpps` | Base URL used when generating QR codes |
+| `SERVER_URL` | — | Public base URL of this service (used for file attachment URLs) |
+| `MINIO_ENDPOINT` | — | MinIO server endpoint |
+| `MINIO_ACCESS_KEY` | — | MinIO access key |
+| `MINIO_SECRET_KEY` | — | MinIO secret key |
+| `MINIO_BUCKET` | — | MinIO bucket name |
+| `MINIO_USE_SSL` | `false` | Set to `true` to enable SSL for MinIO |
+| `BASE_DID_URL` | — | Base URL for DID resolution |
+| `DID_CONTEXT_PATH` | — | Path to DID context file |
 
-To customize these settings, modify the constants in `internal/database/database.go` or use environment variables (implementation can be extended).
+The database name (`dpp_db`) and collection name (`passports`) are compile-time constants in `internal/database/database.go`.
 
 ### Database Setup
 
@@ -161,7 +169,36 @@ http://localhost:8080
 | `GET` | `/dpp/{id}` | Retrieve a specific DPP by ID |
 | `PUT` | `/dpp/{id}` | Update an existing DPP |
 | `DELETE` | `/dpp/{id}` | Delete a DPP |
-| `GET` | `/dpps` | Retrieve all DPPs |
+| `GET` | `/dpp/{id}/qr` | Generate a QR code PNG for a DPP's public URL |
+| `GET` | `/dpps` | Retrieve all DPPs (with search, sort, and facets) |
+
+### GET /dpps — Query Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `q` | string | Full-text search across `productId`, `batchId`, product name, and brand name |
+| `status` | string | Filter by status: `active`, `draft`, or `archived` |
+| `sortBy` | string | Sort field: `createdAt` (default) or `name` |
+| `sortOrder` | string | Sort direction: `desc` (default) or `asc` |
+| `limit` | integer | Maximum number of results to return |
+| `skip` | integer | Number of results to skip (pagination) |
+
+The response includes a `facets` object with document counts per status:
+```json
+{
+  "dpps": [...],
+  "total": 42,
+  "facets": { "active": 30, "draft": 10, "archived": 2 }
+}
+```
+
+### GET /dpp/{id}/qr — Query Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `size` | integer | QR code image size in pixels (64–1024, default 256) |
+
+Returns a PNG image (`image/png`). The encoded URL is built from the `DPP_PUBLIC_URL` environment variable and the DPP ID.
 
 ### HTTP Status Codes
 
@@ -257,7 +294,20 @@ curl -X PUT http://localhost:8080/dpp/60f7b3b4e4b0c8a5f8e4b0c8 \
 ### Get All DPPs
 
 ```bash
+# Basic listing
 curl -X GET http://localhost:8080/dpps
+
+# Search, sort, and filter
+curl -X GET "http://localhost:8080/dpps?q=EcoTech&status=active&sortBy=name&sortOrder=asc&limit=10"
+```
+
+### Get QR Code for a DPP
+
+```bash
+curl -X GET http://localhost:8080/dpp/60f7b3b4e4b0c8a5f8e4b0c8/qr --output dpp-qr.png
+
+# Custom size (128–1024 px)
+curl -X GET "http://localhost:8080/dpp/60f7b3b4e4b0c8a5f8e4b0c8/qr?size=512" --output dpp-qr.png
 ```
 
 ### Delete a DPP
