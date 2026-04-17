@@ -46,6 +46,7 @@ func main() {
 	router.POST("/dpp/:id/attachments", handler.AddAttachment)
 	router.DELETE("/dpp/:id/attachments/:attachmentId", handler.DeleteAttachment)
 	router.GET("/dpps", handler.GetAllDPPs)
+	router.GET("/dpp/:id/qr", handler.GetDPPQRCode)
 	router.POST("/upload", handler.UploadFile)
 	router.GET("/file/:id", handler.GetFile)
 

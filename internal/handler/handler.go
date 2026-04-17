@@ -10,6 +10,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strconv"
 	"time"
@@ -21,6 +22,7 @@ import (
 	"github.com/interfacerproject/interfacer-dpp/internal/database"
 	"github.com/interfacerproject/interfacer-dpp/internal/model"
 	"github.com/oklog/ulid/v2"
+	qrcode "github.com/skip2/go-qrcode"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
@@ -236,6 +238,17 @@ func GetAllDPPs(c *gin.Context) {
 		filter["status"] = st
 	}
 
+	// Text search across multiple fields
+	if q := c.Query("q"); q != "" {
+		regex := bson.M{"$regex": q, "$options": "i"}
+		filter["$or"] = bson.A{
+			bson.M{"productId": regex},
+			bson.M{"batchId": regex},
+			bson.M{"productOverview.productName.value": regex},
+			bson.M{"productOverview.brandName.value": regex},
+		}
+	}
+
 	// Count total matching documents
 	total, err := dppCollection.CountDocuments(ctx, filter)
 	if err != nil {
@@ -243,7 +256,40 @@ func GetAllDPPs(c *gin.Context) {
 		return
 	}
 
-	opts := options.Find().SetSort(bson.M{"createdAt": -1})
+	// Compute facets (status counts) using the base filter minus status
+	facetFilter := bson.M{}
+	for k, v := range filter {
+		if k != "status" {
+			facetFilter[k] = v
+		}
+	}
+	facets, err := countStatusFacets(ctx, dppCollection, facetFilter)
+	if err != nil {
+		// Non-fatal: proceed without facets
+		facets = map[string]int64{"active": 0, "draft": 0, "archived": 0}
+	}
+
+	// Sort options
+	sortField := "createdAt"
+	sortOrder := -1 // descending by default
+	if sb := c.Query("sortBy"); sb != "" {
+		switch sb {
+		case "name":
+			sortField = "productOverview.productName.value"
+		case "createdAt":
+			sortField = "createdAt"
+		}
+	}
+	if so := c.Query("sortOrder"); so != "" {
+		switch so {
+		case "asc":
+			sortOrder = 1
+		case "desc":
+			sortOrder = -1
+		}
+	}
+
+	opts := options.Find().SetSort(bson.M{sortField: sortOrder})
 	if limitStr := c.Query("limit"); limitStr != "" {
 		if l, err := strconv.ParseInt(limitStr, 10, 64); err == nil && l > 0 {
 			opts.SetLimit(l)
@@ -268,7 +314,29 @@ func GetAllDPPs(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"dpps": dpps, "total": total})
+	c.JSON(http.StatusOK, gin.H{
+		"dpps":   dpps,
+		"total":  total,
+		"facets": facets,
+	})
+}
+
+// countStatusFacets counts documents per status for the given base filter.
+func countStatusFacets(ctx context.Context, col *mongo.Collection, baseFilter bson.M) (map[string]int64, error) {
+	result := map[string]int64{"active": 0, "draft": 0, "archived": 0}
+	for _, status := range []string{"active", "draft", "archived"} {
+		f := bson.M{}
+		for k, v := range baseFilter {
+			f[k] = v
+		}
+		f["status"] = status
+		count, err := col.CountDocuments(ctx, f)
+		if err != nil {
+			return nil, err
+		}
+		result[status] = count
+	}
+	return result, nil
 }
 
 func GetFile(c *gin.Context) {
@@ -676,4 +744,36 @@ func DeleteAttachment(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"deleted": attachmentId})
+}
+
+// GetDPPQRCode generates a QR code PNG for a DPP's public URL.
+func GetDPPQRCode(c *gin.Context) {
+	id := c.Param("id")
+	if _, err := ulid.Parse(id); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
+		return
+	}
+
+	// Build the public DPP URL
+	baseURL := os.Getenv("DPP_PUBLIC_URL")
+	if baseURL == "" {
+		baseURL = "https://interfacer.dyne.org/dpps"
+	}
+	dppURL := fmt.Sprintf("%s/%s", baseURL, id)
+
+	size := 256
+	if s := c.Query("size"); s != "" {
+		if parsed, err := strconv.Atoi(s); err == nil && parsed >= 64 && parsed <= 1024 {
+			size = parsed
+		}
+	}
+
+	png, err := qrcode.Encode(dppURL, qrcode.Medium, size)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate QR code"})
+		return
+	}
+
+	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=\"dpp-%s-qr.png\"", id))
+	c.Data(http.StatusOK, "image/png", png)
 }
