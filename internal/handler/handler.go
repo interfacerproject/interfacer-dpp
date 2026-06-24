@@ -131,8 +131,14 @@ func GetDPP(c *gin.Context) {
 		return
 	}
 
+	// Build filter: match by _id, and optionally filter by productId
+	filter := bson.M{"_id": objId}
+	if pid := c.Query("productId"); pid != "" {
+		filter["productId"] = pid
+	}
+
 	var dpp model.DigitalProductPassport
-	err = dppCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&dpp)
+	err = dppCollection.FindOne(ctx, filter).Decode(&dpp)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			c.JSON(http.StatusNotFound, gin.H{"error": "Document not found"})
