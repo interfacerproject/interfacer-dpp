@@ -11,11 +11,31 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/interfacerproject/interfacer-dpp/internal/auth"
 	"github.com/interfacerproject/interfacer-dpp/internal/authz"
+	"github.com/interfacerproject/interfacer-dpp/internal/model"
 )
 
+// keepAuthzParent pins the incoming DPP's ProductID to the stored value so an
+// update cannot change the authorization parent it was just authorized
+// against. ProductID is the binding the PDP decides on (contract §4.2 "parent
+// from the binding, not payload"); letting the request body overwrite it would
+// reparent the object on the very write being authorized.
+func keepAuthzParent(incoming model.DigitalProductPassport, storedProductID string) model.DigitalProductPassport {
+	incoming.ProductID = storedProductID
+	return incoming
+}
+
 // pdpClient is the enforcement point's client of the cross-service PDP. It is a
-// package var so tests can point it at an httptest server.
-var pdpClient = authz.NewClientFromEnv()
+// package var so tests can point it at an httptest server. It is resolved
+// lazily (pdp()) rather than at package init, because ZENFLOWS_PDP_URL is only
+// loaded from .env in main(), which runs after package initialization.
+var pdpClient *authz.Client
+
+func pdp() *authz.Client {
+	if pdpClient == nil {
+		pdpClient = authz.NewClientFromEnv()
+	}
+	return pdpClient
+}
 
 func newRequestID() string {
 	var b [8]byte
@@ -37,7 +57,7 @@ func authorizeWrite(c *gin.Context, principal *auth.Principal, action, parentID,
 	ctx, cancel := context.WithTimeout(context.Background(), 6*time.Second)
 	defer cancel()
 
-	resp, err := pdpClient.Decide(ctx, req)
+	resp, err := pdp().Decide(ctx, req)
 	out := authz.Interpret(resp, err)
 	if !out.Allow {
 		log.Printf("write authz denied: reason=%s action=%s parent=%s route=%s",

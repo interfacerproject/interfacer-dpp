@@ -56,3 +56,21 @@ func TestInterpretUnknownDecisionFailsClosed(t *testing.T) {
 		t.Fatalf("unknown decision must fail closed: got %+v", out)
 	}
 }
+
+func TestInterpretAllowWithEmptyObligationsProceeds(t *testing.T) {
+	out := Interpret(Response{Decision: "allow", ReasonCode: "ok", Obligations: map[string]any{}}, nil)
+	if !out.Allow || out.Status != 200 {
+		t.Fatalf("empty obligations is a clean allow: got %+v", out)
+	}
+}
+
+func TestInterpretAllowWithUnenforceableObligationsFailsClosed(t *testing.T) {
+	out := Interpret(Response{
+		Decision:    "allow",
+		ReasonCode:  "ok",
+		Obligations: map[string]any{"fields": []any{"status"}},
+	}, nil)
+	if out.Allow || out.Status != 403 {
+		t.Fatalf("an allow with obligations the PEP cannot enforce must fail closed: got %+v", out)
+	}
+}

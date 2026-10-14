@@ -67,6 +67,12 @@ func Interpret(resp Response, transportErr error) Outcome {
 		return Outcome{Allow: false, Status: 403, ReasonCode: "pdp_unreachable"}
 	}
 	if resp.Decision == "allow" {
+		// A narrowing allow carries obligations the PEP must enforce
+		// (contract §4.3). This slice enforces none, so an allow with any
+		// obligation is not a clean grant — fail closed until they are wired.
+		if len(resp.Obligations) > 0 {
+			return Outcome{Allow: false, Status: 403, ReasonCode: "unenforceable_obligations"}
+		}
 		return Outcome{Allow: true, Status: 200, ReasonCode: resp.ReasonCode}
 	}
 	reason := resp.ReasonCode

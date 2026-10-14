@@ -194,6 +194,9 @@ func UpdateDPP(c *gin.Context) {
 		return
 	}
 
+	// An update must not change the authorization parent it was authorized
+	// against: pin ProductID to the stored value, never the client body.
+	dpp = keepAuthzParent(dpp, stored.ProductID)
 	dpp.UpdatedAt = time.Now()
 
 	update := bson.M{"$set": dpp}
