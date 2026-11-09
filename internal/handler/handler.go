@@ -152,6 +152,18 @@ func GetDPP(c *gin.Context) {
 }
 
 func UpdateDPP(c *gin.Context) {
+	id := c.Param("id")
+	objId, err := ulid.Parse(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
+		return
+	}
+
+	body, _, ok := authenticateWrite(c, id, false)
+	if !ok {
+		return
+	}
+
 	dppCollection, err := getCollection()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to connect to database"})
@@ -161,15 +173,8 @@ func UpdateDPP(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	id := c.Param("id")
-	objId, err := ulid.Parse(id)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
-		return
-	}
-
 	var dpp model.DigitalProductPassport
-	if err := c.BindJSON(&dpp); err != nil {
+	if err := json.Unmarshal(body, &dpp); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -193,6 +198,17 @@ func UpdateDPP(c *gin.Context) {
 }
 
 func DeleteDPP(c *gin.Context) {
+	id := c.Param("id")
+	objId, err := ulid.Parse(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
+		return
+	}
+
+	if _, _, ok := authenticateWrite(c, id, true); !ok {
+		return
+	}
+
 	dppCollection, err := getCollection()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to connect to database"})
@@ -201,13 +217,6 @@ func DeleteDPP(c *gin.Context) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-
-	id := c.Param("id")
-	objId, err := ulid.Parse(id)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
-		return
-	}
 
 	result, err := dppCollection.DeleteOne(ctx, bson.M{"_id": objId})
 	if err != nil {
@@ -479,6 +488,18 @@ func UploadFile(c *gin.Context) {
 
 // UpdateDPPStatus handles PUT /dpp/:id/status
 func UpdateDPPStatus(c *gin.Context) {
+	id := c.Param("id")
+	objId, err := ulid.Parse(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
+		return
+	}
+
+	raw, _, ok := authenticateWrite(c, id, false)
+	if !ok {
+		return
+	}
+
 	dppCollection, err := getCollection()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to connect to database"})
@@ -488,17 +509,10 @@ func UpdateDPPStatus(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	id := c.Param("id")
-	objId, err := ulid.Parse(id)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
-		return
-	}
-
 	var body struct {
-		Status string `json:"status" binding:"required"`
+		Status string `json:"status"`
 	}
-	if err := c.BindJSON(&body); err != nil {
+	if err := json.Unmarshal(raw, &body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -675,6 +689,17 @@ func AddAttachment(c *gin.Context) {
 
 // DeleteAttachment handles DELETE /dpp/:id/attachments/:attachmentId
 func DeleteAttachment(c *gin.Context) {
+	id := c.Param("id")
+	objId, err := ulid.Parse(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
+		return
+	}
+
+	if _, _, ok := authenticateWrite(c, id, true); !ok {
+		return
+	}
+
 	dppCollection, err := getCollection()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to connect to database"})
@@ -683,13 +708,6 @@ func DeleteAttachment(c *gin.Context) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-
-	id := c.Param("id")
-	objId, err := ulid.Parse(id)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
-		return
-	}
 
 	attachmentId := c.Param("attachmentId")
 	if attachmentId == "" {
