@@ -159,7 +159,7 @@ func UpdateDPP(c *gin.Context) {
 		return
 	}
 
-	body, _, ok := authenticateWrite(c, id, false)
+	body, principal, ok := authenticateWrite(c, id, false)
 	if !ok {
 		return
 	}
@@ -173,12 +173,30 @@ func UpdateDPP(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
+	// Derive the authorization parent from the STORED object, never the body.
+	var stored model.DigitalProductPassport
+	if err := dppCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&stored); err != nil {
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Document not found"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error retrieving document"})
+		return
+	}
+	if !authorizeWrite(c, principal, "dpp.spec.update", stored.ProductID,
+		b64.StdEncoding.EncodeToString(body)) {
+		return
+	}
+
 	var dpp model.DigitalProductPassport
 	if err := json.Unmarshal(body, &dpp); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
+	// An update must not change the authorization parent it was authorized
+	// against: pin ProductID to the stored value, never the client body.
+	dpp = keepAuthzParent(dpp, stored.ProductID)
 	dpp.UpdatedAt = time.Now()
 
 	update := bson.M{"$set": dpp}
@@ -205,7 +223,8 @@ func DeleteDPP(c *gin.Context) {
 		return
 	}
 
-	if _, _, ok := authenticateWrite(c, id, true); !ok {
+	_, principal, ok := authenticateWrite(c, id, true)
+	if !ok {
 		return
 	}
 
@@ -217,6 +236,20 @@ func DeleteDPP(c *gin.Context) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
+
+	var stored model.DigitalProductPassport
+	if err := dppCollection.FindOne(ctx, bson.M{"_id": objId}).Decode(&stored); err != nil {
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Document not found to delete"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error retrieving document"})
+		return
+	}
+	if !authorizeWrite(c, principal, "dpp.delete", stored.ProductID,
+		b64.StdEncoding.EncodeToString([]byte(id))) {
+		return
+	}
 
 	result, err := dppCollection.DeleteOne(ctx, bson.M{"_id": objId})
 	if err != nil {
@@ -495,7 +528,7 @@ func UpdateDPPStatus(c *gin.Context) {
 		return
 	}
 
-	raw, _, ok := authenticateWrite(c, id, false)
+	raw, principal, ok := authenticateWrite(c, id, false)
 	if !ok {
 		return
 	}
@@ -532,6 +565,10 @@ func UpdateDPPStatus(c *gin.Context) {
 			return
 		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error retrieving document"})
+		return
+	}
+	if !authorizeWrite(c, principal, "dpp.status.update", current.ProductID,
+		b64.StdEncoding.EncodeToString(raw)) {
 		return
 	}
 
@@ -696,7 +733,8 @@ func DeleteAttachment(c *gin.Context) {
 		return
 	}
 
-	if _, _, ok := authenticateWrite(c, id, true); !ok {
+	_, principal, ok := authenticateWrite(c, id, true)
+	if !ok {
 		return
 	}
 
@@ -724,6 +762,10 @@ func DeleteAttachment(c *gin.Context) {
 			return
 		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error retrieving document"})
+		return
+	}
+	if !authorizeWrite(c, principal, "dpp.attachment.delete", dpp.ProductID,
+		b64.StdEncoding.EncodeToString([]byte(id))) {
 		return
 	}
 
