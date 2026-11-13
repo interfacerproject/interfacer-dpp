@@ -1,4 +1,4 @@
-FROM golang:1.24-bullseye AS builder
+FROM golang:1.24-bookworm AS builder
 ENV GONOPROXY=
 
 # Install build dependencies for zencode-exec
@@ -26,7 +26,10 @@ RUN go mod download
 COPY . .
 RUN go build -o /interfacer-dpp ./cmd/main
 
-FROM dyne/devuan:chimaera
+# Devuan 5 (Debian 12 base): the same glibc the builder linked against.
+FROM dyne/devuan:daedalus
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 WORKDIR /root
 
 ENV HOST=0.0.0.0
